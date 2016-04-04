@@ -6,10 +6,8 @@ import math
 
 import array
 
-import statistics
-
 from matplotlib import rc
-rc('font', family='Droid Sans', weight='normal', size=14)
+rc('font', family='Arial', weight='normal', size=14)
 
 import matplotlib.pyplot as plt
 
@@ -19,7 +17,7 @@ class WikiGraph:
 	def load_from_file(self, filename):
 		print('Загружаю граф из файла: ' + filename)
 		self.edges = array.array('L', [])
-		self.offset = array.array('H', [0])
+		self.offset = array.array('L', [0])
 		self.titles = [] # Массив названий статей
 		with open(filename, encoding="utf8") as f:
 			# Кол-во всех статей и ссылок (вершин и ребер)
@@ -35,7 +33,7 @@ class WikiGraph:
 			self._redirect = array.array('B', [0]*articles_number)
 			
 			# Таблица перенаправленных статей
-			self.external_redirect = array.array('B', [0]*articles_number)
+			self.external_redirect = array.array('L', [0]*articles_number)
 			
 			# Массив весов вершин
 			self._sizes = array.array('L', [0]*articles_number)
@@ -92,9 +90,15 @@ class WikiGraph:
 		return self._sizes[_id]
 
 
-def hist(fname, data, bins, xlabel, ylabel, title, facecolor='green', alpha=0.5, transparent=True, **kwargs):
+def hist(data, xlabel, ylabel, title, bins, facecolor='green', alpha = 0.5, transparent = True, fname = None):
 	plt.clf()
-	# TODO: нарисовать гистограмму и сохранить в файл
+	plt.hist(data, bins, facecolor = facecolor, alpha = alpha)
+	plt.xlabel(xlabel)
+	plt.ylabel(ylabel)
+	plt.title(title)
+	plt.axis([0, len(data), 0, max(data)])
+	plt.grid(True)
+	plt.show()
 	
 def bfs(G, start, end, nodes = [], wg = None, fired = {}): # Поиск по ширине
 	# Аргументы: граф, стартовая вершина, конечная, вершины искомого пути, вики-граф (при первом вызове не нужен), массив пройденных вершин
@@ -188,3 +192,6 @@ if __name__ == '__main__':
 	print('Среднее количество внешних перенаправлений на статью:', round(average_n_ext_redirect, 2), '\n')
 	
 	print_path(wg)
+	
+	#hist(links_titles, 'Кол-во ссылок', 'Кол-во статей', 'Распределение кол-ва ссылок из статьи', 100)
+	
